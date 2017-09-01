@@ -11,6 +11,7 @@ import rest.api.json.Movie;
 import rest.api.service.MovieService;
 import rest.api.service.RatingService;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.function.Function;
 
@@ -43,7 +44,7 @@ public class MovieController {
     }
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity addMovie(@RequestBody Movie movie) {
+    public ResponseEntity addMovie(@RequestBody @Valid Movie movie) {
         final String movieId = movieService.save(jsonToDtoMovieMapper().apply(movie));
         final URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{movie_id}")
                         .buildAndExpand(movieId).toUri();
