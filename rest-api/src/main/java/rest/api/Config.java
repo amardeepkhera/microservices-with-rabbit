@@ -6,6 +6,7 @@ import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.AsyncRabbitTemplate;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
@@ -25,6 +26,15 @@ import java.util.concurrent.Executors;
 public class Config {
 
     @Bean
+    public ConnectionFactory connectionFactory() {
+        CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
+        connectionFactory.setUsername("guest");
+        connectionFactory.setPassword("guest");
+        connectionFactory.setAddresses("localhost:5672,localhost:5673,localhost:5674");
+        return connectionFactory;
+    }
+
+    @Bean
     public Executor taskExecutor() {
         return Executors.newCachedThreadPool();
     }
@@ -35,7 +45,12 @@ public class Config {
     }
 
     @Bean
-    public SimpleMessageListenerContainer rpcReplyMessageListenerContainer(ConnectionFactory connectionFactory) {
+    public Queue replyQueueForRating() {
+        return new Queue("reply.queue.rating");
+    }
+
+    @Bean
+    public SimpleMessageListenerContainer movieReplyMessageListenerContainer(ConnectionFactory connectionFactory) {
         SimpleMessageListenerContainer simpleMessageListenerContainer = new SimpleMessageListenerContainer(connectionFactory);
         simpleMessageListenerContainer.setQueues(replyQueueForMovie());
         simpleMessageListenerContainer.setTaskExecutor(taskExecutor());
@@ -43,20 +58,27 @@ public class Config {
         return simpleMessageListenerContainer;
     }
 
-
     @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
-        RabbitTemplate template = new RabbitTemplate(connectionFactory);
-        return template;
+    public SimpleMessageListenerContainer ratingReplyMessageListenerContainer(ConnectionFactory connectionFactory) {
+        SimpleMessageListenerContainer simpleMessageListenerContainer = new SimpleMessageListenerContainer(connectionFactory);
+        simpleMessageListenerContainer.setQueues(replyQueueForRating());
+        simpleMessageListenerContainer.setTaskExecutor(taskExecutor());
+        simpleMessageListenerContainer.setMaxConcurrentConsumers(10);
+        return simpleMessageListenerContainer;
     }
 
     @Bean
-    public AsyncRabbitTemplate asyncRabbitTemplate(ConnectionFactory connectionFactory) {
+    public AsyncRabbitTemplate movieRabbitTemplate(ConnectionFactory connectionFactory) {
+        return new AsyncRabbitTemplate(new RabbitTemplate(connectionFactory),
+                        movieReplyMessageListenerContainer(connectionFactory),
+                        "microservices" + "/" + "reply.movie");
+    }
 
-        AsyncRabbitTemplate asyncRabbitTemplate = new AsyncRabbitTemplate(rabbitTemplate(connectionFactory),
-                        rpcReplyMessageListenerContainer(connectionFactory),
-                        "microservices" + "/" + "reply.movie.getById");
-        return asyncRabbitTemplate;
+    @Bean
+    public AsyncRabbitTemplate ratingRabbitTemplate(ConnectionFactory connectionFactory) {
+        return new AsyncRabbitTemplate(new RabbitTemplate(connectionFactory),
+                        ratingReplyMessageListenerContainer(connectionFactory),
+                        "microservices" + "/" + "reply.rating");
     }
 
     @Bean
@@ -67,6 +89,8 @@ public class Config {
     @Bean
     public List<Binding> bindings() {
         return Arrays.asList(
-                        BindingBuilder.bind(replyQueueForMovie()).to(directExchange()).with("reply.movie.getById"));
+                        BindingBuilder.bind(replyQueueForMovie()).to(directExchange()).with("reply.movie")
+                        , BindingBuilder.bind(replyQueueForRating()).to(directExchange()).with("reply.rating")
+        );
     }
 }

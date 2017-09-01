@@ -44,4 +44,9 @@ public class Movie {
     @Column(name = "ADDED_ON", insertable = true)
     @Temporal(TemporalType.TIMESTAMP)
     private Date addedOn;
+
+    @Basic
+    @Size(min = 1, max = 36)
+    @Column(name = "RATING_ID")
+    private String ratingId;
 }

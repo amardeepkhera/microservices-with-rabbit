@@ -1,0 +1,24 @@
+DROP TABLE IF EXISTS RATING;
+
+-- Create Table: RATING
+-- ------------------------------------------------------------------------------
+CREATE TABLE RATING
+(
+  `ID`         VARCHAR(36) NOT NULL
+  ,
+  PRIMARY KEY (ID)
+  ,
+  `RATING`     VARCHAR(10) NOT NULL
+  ,
+  `ADDED_ON`   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  ,
+  `UPDATED_ON` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+  ENGINE = INNODB;
+
+INSERT INTO `RATING` (`ID`, `RATING`)
+VALUES ('89939413-efbc-4c9e-a7e5-96920a21f47c', '10');
+INSERT INTO `RATING` (`ID`, `RATING`)
+VALUES ('e493bc00-4af8-4c13-94c0-8eb60e3187b4', '9');
+INSERT INTO `RATING` (`ID`, `RATING`)
+VALUES ('1c79657b-78fa-42f1-af7f-09d5b67e5cf7', '8');

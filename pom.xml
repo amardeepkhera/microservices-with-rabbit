@@ -8,6 +8,7 @@
     <modules>
         <module>movie-service</module>
         <module>rest-api</module>
+        <module>rating-service</module>
     </modules>
     <packaging>pom</packaging>
 

@@ -1,6 +1,9 @@
 package rest.api.repository;
 
+import rest.api.message.BaseMessage;
 import rest.api.message.Movie;
+
+import java.util.Map;
 
 /**
  * Created by amardeep2551 on 8/30/2017.
@@ -8,5 +11,7 @@ import rest.api.message.Movie;
 public interface MovieRepository {
     Movie get(String id);
 
-    String save(Movie movie);
+    Movie save(Movie movie);
+
+    BaseMessage updateRating(Movie movie);
 }

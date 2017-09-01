@@ -6,8 +6,7 @@ import microservices.movie.exception.NotFoundException;
 import microservices.movie.service.MovieService;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -39,6 +38,14 @@ public class MovieServiceImpl implements MovieService {
                         .apply(movie)).getId();
     }
 
+    @Override
+    public void updateMovieRating(Movie movieDto) {
+        microservices.movie.entity.Movie movie = movieRepository.findById(movieDto.getId())
+                        .orElseThrow(() -> new NotFoundException("Not Found"));
+        movie.setRatingId(movieDto.getRatingId());
+        movieRepository.save(movie);
+    }
+
     private Function<microservices.movie.entity.Movie, Movie> entityToDtoMovieMapper() {
         return source -> {
             Movie movie = new Movie();
@@ -46,6 +53,7 @@ public class MovieServiceImpl implements MovieService {
             movie.setName(source.getName());
             movie.setDirectorName(source.getDirectorName());
             movie.setGenre(source.getGenre());
+            movie.setRatingId(source.getRatingId());
             return movie;
         };
     }
@@ -57,6 +65,7 @@ public class MovieServiceImpl implements MovieService {
             movie.setName(source.getName());
             movie.setDirectorName(source.getDirectorName());
             movie.setGenre(source.getGenre());
+            movie.setRatingId(source.getRatingId());
             movie.setAddedOn(new Date());
             return movie;
         };

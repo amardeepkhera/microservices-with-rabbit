@@ -10,4 +10,5 @@ public class Movie {
     private String name;
     private String directorName;
     private String genre;
+    private String ratingId;
 }

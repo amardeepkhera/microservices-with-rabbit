@@ -1,6 +1,5 @@
-package microservices.movie;
+package microservices.rating;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
@@ -10,7 +9,6 @@ import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFacto
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.ConditionalRejectingErrorHandler;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.amqp.SimpleRabbitListenerContainerFactoryConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,8 +42,8 @@ public class Config {
     }
 
     @Bean
-    public SimpleRabbitListenerContainerFactory movieListenerContainerFactory(ConnectionFactory connectionFactory,
-                                                                              SimpleRabbitListenerContainerFactoryConfigurer configurer) {
+    public SimpleRabbitListenerContainerFactory ratingListenerContainerFactory(ConnectionFactory connectionFactory,
+                                                                               SimpleRabbitListenerContainerFactoryConfigurer configurer) {
         SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
         factory.setTaskExecutor(taskExecutor());
         factory.setMaxConcurrentConsumers(10);
@@ -65,7 +63,7 @@ public class Config {
 
     @Bean
     public Queue requestQueue() {
-        return new Queue("queue.movie");
+        return new Queue("queue.rating");
     }
 
     @Bean
@@ -76,9 +74,9 @@ public class Config {
     @Bean
     public List<Binding> bindings() {
         return Arrays.asList(
-                        BindingBuilder.bind(requestQueue()).to(directExchange()).with("movie.getById"),
-                        BindingBuilder.bind(requestQueue()).to(directExchange()).with("movie.save"),
-                        BindingBuilder.bind(requestQueue()).to(directExchange()).with("movie.updateRating"));
+                        BindingBuilder.bind(requestQueue()).to(directExchange()).with("rating.getById"),
+                        BindingBuilder.bind(requestQueue()).to(directExchange()).with("rating.create"),
+                        BindingBuilder.bind(requestQueue()).to(directExchange()).with("rating.update"));
     }
 
 }
