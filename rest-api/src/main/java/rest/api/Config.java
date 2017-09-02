@@ -10,6 +10,7 @@ import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -24,6 +25,9 @@ import java.util.concurrent.Executors;
 @EnableRabbit
 @Configuration
 public class Config {
+
+    @Value("${server.port}")
+    private String port;
 
     @Bean
     public ConnectionFactory connectionFactory() {
@@ -41,12 +45,12 @@ public class Config {
 
     @Bean
     public Queue replyQueueForMovie() {
-        return new Queue("reply.queue.movie");
+        return new Queue("reply.queue.movie-" + port);
     }
 
     @Bean
     public Queue replyQueueForRating() {
-        return new Queue("reply.queue.rating");
+        return new Queue("reply.queue.rating-" + port);
     }
 
     @Bean

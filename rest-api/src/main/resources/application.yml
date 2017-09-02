@@ -1,5 +1,5 @@
 server:
   contextPath: /rest-api
-  port: 9005
+  port: ${portNumber}
 spring:
   jpa.hibernate.ddl-auto: none
