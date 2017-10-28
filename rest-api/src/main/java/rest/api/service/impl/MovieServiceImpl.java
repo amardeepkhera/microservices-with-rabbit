@@ -1,5 +1,6 @@
 package rest.api.service.impl;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.stereotype.Service;
 import rest.api.dto.Movie;
 import rest.api.message.BaseMessage;
@@ -23,10 +24,16 @@ public class MovieServiceImpl implements MovieService {
 
 
     @Override
+    @HystrixCommand(fallbackMethod = "returnEmptyMovie")
     public Movie getMovie(String id) {
         rest.api.message.Movie movie = movieRepository.get(id);
         responseStatusValidator.verifyAndThrowResourceNotFoundException(movie);
         return messageToDtoMovieMapper().apply(movie);
+    }
+
+    public Movie returnEmptyMovie(String id) {
+
+        return new Movie();
     }
 
     @Override

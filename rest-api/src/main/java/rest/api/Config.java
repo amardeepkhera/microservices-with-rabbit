@@ -11,6 +11,9 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
+import org.springframework.cloud.netflix.hystrix.EnableHystrix;
+import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboard;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -24,17 +27,20 @@ import java.util.concurrent.Executors;
  */
 @EnableRabbit
 @Configuration
+@EnableHystrix
+@EnableHystrixDashboard
+@EnableCircuitBreaker
 public class Config {
 
-    @Value("${server.port}")
-    private String port;
+    //@Value("${server.port}")
+    private String port="9007";
 
     @Bean
     public ConnectionFactory connectionFactory() {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
         connectionFactory.setUsername("guest");
         connectionFactory.setPassword("guest");
-        connectionFactory.setAddresses("localhost:5672,localhost:5673,localhost:5674");
+        connectionFactory.setAddresses("rabbit");
         return connectionFactory;
     }
 

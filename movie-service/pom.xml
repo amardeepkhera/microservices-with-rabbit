@@ -58,6 +58,21 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.4.13</version>
+                <configuration>
+                    <imageName>movie-service</imageName>
+                    <dockerDirectory>docker</dockerDirectory>
+                    <resources>
+                        <resource>
+                            <directory>${project.build.directory}</directory>
+                            <include>movie-service.jar</include>
+                        </resource>
+                    </resources>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

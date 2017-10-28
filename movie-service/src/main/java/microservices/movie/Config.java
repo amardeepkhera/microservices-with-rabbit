@@ -33,7 +33,7 @@ public class Config {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
         connectionFactory.setUsername("guest");
         connectionFactory.setPassword("guest");
-        connectionFactory.setAddresses("localhost:5672,localhost:5673,localhost:5674");
+        connectionFactory.setAddresses("rabbit");
         return connectionFactory;
     }
 

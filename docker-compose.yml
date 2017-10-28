@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  REST-API:
+    image: rest-api
+    container_name: rest-api
+    ports:
+      - 9007:9007
+    depends_on:
+      - RABBIT
+  MOVIE-SERVICE:
+      image: movie-service
+      container_name: movie-service
+      depends_on:
+        - RABBIT
+  RATING-SERVICE:
+        image: rating-service
+        container_name: rating-service
+        depends_on:
+          - RABBIT
+  RABBIT:
+    container_name: rabbit
+    image: harbur/rabbitmq-cluster
+    command: bash -c "sleep 10; rabbitmq-server;"
+    ports:
+      - 5672:5672
+      - 15672:15672
+

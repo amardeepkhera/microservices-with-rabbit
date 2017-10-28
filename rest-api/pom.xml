@@ -35,6 +35,28 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.netflix.hystrix/hystrix-javanica -->
+        <dependency>
+            <groupId>com.netflix.hystrix</groupId>
+            <artifactId>hystrix-javanica</artifactId>
+            <version>1.4.0-RC1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.springframework.cloud</groupId>-->
+            <!--<artifactId>spring-cloud-starter-hystrix</artifactId>-->
+            <!--<version>RELEASE</version>-->
+        <!--</dependency>-->
+        <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-netflix-hystrix-dashboard -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-netflix-hystrix-dashboard</artifactId>
+            <version>1.0.0.RELEASE</version>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>
@@ -54,6 +76,21 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.4.13</version>
+                <configuration>
+                    <imageName>rest-api</imageName>
+                    <dockerDirectory>docker</dockerDirectory>
+                    <resources>
+                        <resource>
+                            <directory>${project.build.directory}</directory>
+                            <include>rest-api.jar</include>
+                        </resource>
+                    </resources>
+                </configuration>
             </plugin>
         </plugins>
     </build>

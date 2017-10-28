@@ -1,6 +1,8 @@
 package rest.api.service.impl;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.stereotype.Service;
+import rest.api.dto.Movie;
 import rest.api.dto.Rating;
 import rest.api.message.BaseMessage;
 import rest.api.repository.RatingRepository;
@@ -24,9 +26,15 @@ public class RatingServiceImpl implements RatingService {
 
 
     @Override
+    @HystrixCommand(fallbackMethod = "returnEmptyRating")
     public Rating getById(String id) {
         final rest.api.message.Rating rating = ratingRepository.getById(id);
         return messageToDtoRatingMapper().apply(rating);
+    }
+
+    public Rating returnEmptyRating(String id) {
+
+        return new Rating();
     }
 
     @Override

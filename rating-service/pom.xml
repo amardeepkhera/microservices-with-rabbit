@@ -52,10 +52,25 @@
                             <goal>repackage</goal>
                         </goals>
                         <configuration>
-                            <finalName>ratingId-service</finalName>
+                            <finalName>rating-service</finalName>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.4.13</version>
+                <configuration>
+                    <imageName>rating-service</imageName>
+                    <dockerDirectory>docker</dockerDirectory>
+                    <resources>
+                        <resource>
+                            <directory>${project.build.directory}</directory>
+                            <include>rating-service.jar</include>
+                        </resource>
+                    </resources>
+                </configuration>
             </plugin>
         </plugins>
     </build>
